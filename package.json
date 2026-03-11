@@ -1,6 +1,6 @@
 {
   "name": "audio-format-blind-test",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "productName": "Audio Format Blind Test",
   "description": "Offline EQ Shootout Application",
   "main": "main.js",

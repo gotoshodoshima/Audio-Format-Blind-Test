@@ -9,6 +9,9 @@ function App() {
   const [theme, setTheme] = useState<'light' | 'dark'>(() => {
     return (localStorage.getItem('eq_blind_test_theme') as 'light' | 'dark') || 'dark';
   });
+  const [showVisualizer, setShowVisualizer] = useState<'visible' | 'hidden'>(() => {
+    return (localStorage.getItem('eq_blind_test_visualizer') as 'visible' | 'hidden') || 'visible';
+  });
   
   // Global App State
   const [playlist, setPlaylist] = useState<Song[]>([]);
@@ -61,6 +64,10 @@ function App() {
   useEffect(() => {
     localStorage.setItem('eq_blind_test_profiles', JSON.stringify(profiles));
   }, [profiles]);
+
+  useEffect(() => {
+    localStorage.setItem('eq_blind_test_visualizer', showVisualizer);
+  }, [showVisualizer]);
 
   useEffect(() => {
     localStorage.setItem('eq_blind_test_history', JSON.stringify(history));
@@ -124,8 +131,16 @@ function App() {
               Test
             </button>
             <button 
+              onClick={() => setShowVisualizer(v => v === 'visible' ? 'hidden' : 'visible')} 
+              className={`p-1.5 rounded-lg transition-colors ml-4 ${showVisualizer === 'visible' ? 'text-primary bg-primary/10' : 'text-muted-foreground hover:text-foreground'}`}
+              title="Toggle Visualizer"
+            >
+              <Activity size={16} className={showVisualizer !== 'visible' ? 'opacity-50' : ''} />
+            </button>
+            <button 
               onClick={() => setTheme(t => t === 'dark' ? 'light' : 'dark')} 
               className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground transition-colors ml-2"
+              title="Toggle Theme"
             >
               {theme === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
             </button>
@@ -150,6 +165,7 @@ function App() {
             history={history}
             setHistory={setHistory}
             resetStats={resetStats}
+            showVisualizer={showVisualizer === 'visible'}
           />
         )}
       </main>

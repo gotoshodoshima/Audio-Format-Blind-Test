@@ -9,9 +9,10 @@ interface TestTabProps {
   history: HistoryEntry[];
   setHistory: React.Dispatch<React.SetStateAction<HistoryEntry[]>>;
   resetStats: () => void;
+  showVisualizer?: boolean;
 }
 
-export const TestTab: React.FC<TestTabProps> = ({ playlist, profiles, history, setHistory, resetStats }) => {
+export const TestTab: React.FC<TestTabProps> = ({ playlist, profiles, history, setHistory, resetStats, showVisualizer = true }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [activeSource, setActiveSource] = useState<'A' | 'B' | null>(null);
   
@@ -157,6 +158,8 @@ export const TestTab: React.FC<TestTabProps> = ({ playlist, profiles, history, s
 
     // Use forcedSource if provided (first click), otherwise use current activeSource
     const effectiveSource = forcedSource || activeSource;
+    
+    // Direct 0ms assignment as requested. To avoid processing delay pops, we just set values.
     gainA.gain.value = effectiveSource === 'A' ? 1 : 0;
     gainB.gain.value = effectiveSource === 'B' ? 1 : 0;
 
@@ -226,6 +229,7 @@ export const TestTab: React.FC<TestTabProps> = ({ playlist, profiles, history, s
   const switchSource = (source: 'A' | 'B') => {
     setActiveSource(source);
     if (gainARef.current && gainBRef.current) {
+        // Direct 0ms assignment as requested to test for processing delay pops
         gainARef.current.gain.value = source === 'A' ? 1 : 0;
         gainBRef.current.gain.value = source === 'B' ? 1 : 0;
     }
@@ -334,28 +338,32 @@ export const TestTab: React.FC<TestTabProps> = ({ playlist, profiles, history, s
           <div className="grid grid-cols-2 gap-4 h-64">
             <button 
               onClick={() => switchSource('A')} 
-              className={`relative rounded-2xl border-2 transition-all duration-300 overflow-hidden flex flex-col items-start p-6 text-left group ${activeSource === 'A' ? 'border-primary bg-muted shadow-xl opacity-100' : 'border-border bg-background opacity-40 hover:opacity-100'} `}
+              className={`relative rounded-2xl border-2 transition-all duration-300 overflow-hidden flex flex-col items-start p-6 text-left group ${activeSource === 'A' ? 'border-primary bg-muted shadow-xl' : 'border-zinc-800 bg-background hover:border-white/60'} `}
             >
-              <span className={`text-3xl font-bold mb-2 ${activeSource === 'A' ? 'text-primary' : 'text-muted-foreground'} `}>
-                Play A
-              </span>
-              {/* Only show visualizer for the active source */}
-              {activeSource === 'A' && (
-                <div className="flex-1 w-full flex items-end">
+              <div className="relative z-10">
+                <span className={`text-3xl font-bold mb-2 block ${activeSource === 'A' ? 'text-primary' : 'text-muted-foreground opacity-50'} `}>
+                  Play A
+                </span>
+              </div>
+              {/* Only show visualizer for the active source if enabled */}
+              {showVisualizer && activeSource === 'A' && (
+                <div className="absolute inset-x-0 bottom-0 h-1/2 flex items-end opacity-50 pointer-events-none">
                     <Visualizer analyser={analyserRef.current} isActive={isPlaying} />
                 </div>
               )}
             </button>
             <button 
               onClick={() => switchSource('B')} 
-              className={`relative rounded-2xl border-2 transition-all duration-300 overflow-hidden flex flex-col items-start p-6 text-left group ${activeSource === 'B' ? 'border-primary bg-muted shadow-xl opacity-100' : 'border-border bg-background opacity-40 hover:opacity-100'} `}
+              className={`relative rounded-2xl border-2 transition-all duration-300 overflow-hidden flex flex-col items-start p-6 text-left group ${activeSource === 'B' ? 'border-primary bg-muted shadow-xl' : 'border-zinc-800 bg-background hover:border-white/60'} `}
             >
-              <span className={`text-3xl font-bold mb-2 ${activeSource === 'B' ? 'text-primary' : 'text-muted-foreground'} `}>
-                Play B
-              </span>
-              {/* Only show visualizer for the active source */}
-              {activeSource === 'B' && (
-                <div className="flex-1 w-full flex items-end">
+              <div className="relative z-10">
+                <span className={`text-3xl font-bold mb-2 block ${activeSource === 'B' ? 'text-primary' : 'text-muted-foreground opacity-50'} `}>
+                  Play B
+                </span>
+              </div>
+              {/* Only show visualizer for the active source if enabled */}
+              {showVisualizer && activeSource === 'B' && (
+                <div className="absolute inset-x-0 bottom-0 h-1/2 flex items-end opacity-50 pointer-events-none">
                    <Visualizer analyser={analyserRef.current} isActive={isPlaying} />
                 </div>
               )}
