@@ -1,37 +1,59 @@
-EQ Blind Test v2 - Persistent Edition
+# Audio Format Blind Test
 
-This is a professional-grade Equalizer Blind Test application built with Electron. It allows users to compare different EQ profiles blindly and rank them using the Glicko-1 rating system.
+A professional-grade web application for performing blind A/B tests between original, uncompressed audio sources and various compressed formats. Designed for audiophiles, engineers, and researchers to objectively evaluate the transparency of audio codecs.
 
-Key Features
+## 🚀 Key Features
 
-Seamless Switching: Switch between Profile A and B instantly without audio gaps.
+- **Fixed A/B Comparison**: Strictly compares "Original Source" vs "Compressed Format" to ensure a focused and scientifically valid testing environment.
+- **WASM-Powered Conversion**: Uses `ffmpeg.wasm` for high-quality client-side audio encoding (MP3, AAC, WAV).
+- **High Resolution Support**: Handles up to 96kHz / 24-bit audio sources with accurate metadata detection.
+- **Blind Shuffle Logic**: Randomly assigns the original and compressed versions to "A" and "B" slots for each round.
+- **Statistical Analysis**: Calculates P-values and success rates to determine the statistical significance of the test results.
+- **Modern UI**: Sleek dark mode interface with real-time audio visualization and peak meters.
 
-Loudness Compensation: Automatically balances the perceived volume between profiles for a fair test.
+## 🛠 Supported Formats
 
-Persistent Playlist: Your uploaded songs are saved in the app using IndexedDB.
+- **Reference**: Uncompressed Linear PCM (WAV, AIFF, etc.)
+- **MP3**: Industry-standard lossy compression via LAME.
+- **AAC**: High-efficiency compression (ADTS container for broad browser compatibility).
+- **WAV (Downsample)**: Bit-depth (16/24-bit) and sample rate conversion for testing quantization/aliasing.
 
-Glicko-1 System: Accurate ranking based on statistical probability.
+## 💻 Technical Stack
 
-Visualizer: Real-time audio frequency visualization.
+- **Frontend**: React 19, TypeScript, Vite
+- **Styling**: Tailwind CSS 4
+- **Audio Engine**: Web Audio API
+- **Transcoding**: `@ffmpeg/ffmpeg` (FFmpeg.WASM)
+- **Desktop Shell**: Electron (for offline/standalone distribution)
 
-How to use
+## 📥 Getting Started
 
-Setup: Add your EQ profiles (Equalizer APO format or JSON).
+### Prerequisites
+- Node.js (v18 or higher)
+- npm or yarn
 
-Upload: Drop your reference audio files.
+### Development
+1. Clone the repository
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+3. Run the development server:
+   ```bash
+   npm run dev
+   ```
 
-Test: Click "Play A" and "Play B" to compare, then vote for your preference.
+### Building for Production
+To create the web assets:
+```bash
+npm run build
+```
 
-Results: Check the Ranking and League Table to see which EQ is truly the best.
+To package as a Windows executable (.exe):
+1. Build the web app (`npm run build`).
+2. Copy `dist` assets into the `eq-app_antigravity` folder.
+3. Run `npm run dist` inside the Electron folder.
 
-For Developers
+## ⚖️ License
+MIT
 
-To run this locally:
-
-Clone the repository.
-
-Ensure you have the required libraries in the /libs folder.
-
-Run npm install.
-
-Run npm start.
